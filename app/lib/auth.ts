@@ -16,7 +16,7 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          return null;
+          throw new Error("Username and password are required");
         }
         const userData = {
           username: credentials.username as string,
@@ -26,6 +26,10 @@ const authOptions: AuthOptions = {
         const loginResponse = await loginService(userData);
 
         if (!loginResponse || !isLoginSuccess(loginResponse)) {
+          const apiMessage = loginResponse?.status?.message;
+          if (apiMessage) {
+            throw new Error(apiMessage);
+          }
           return null;
         }
 

@@ -38,7 +38,7 @@ export function LoginForm() {
       ? "Authentication configuration error. Please check NEXTAUTH_SECRET and NEXTAUTH_URL."
       : errorParam === "CredentialsSignin"
         ? "Invalid username or password"
-        : null
+        : errorParam
   );
 
   const form = useForm<LoginFormValues>({
@@ -62,7 +62,11 @@ export function LoginForm() {
       });
 
       if (result?.error) {
-        setSubmitError("Invalid username or password");
+        setSubmitError(
+          result.error === "CredentialsSignin"
+            ? "Invalid username or password"
+            : result.error
+        );
         return;
       }
 
@@ -76,85 +80,120 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {registered && (
-                <Alert className="border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
-                  <AlertDescription>
-                    Account created successfully. Please sign in.
-                  </AlertDescription>
-                </Alert>
-              )}
-              {submitError && (
-                <Alert variant="destructive">
-                  <AlertDescription>{submitError}</AlertDescription>
-                </Alert>
-              )}
+    <div className="relative min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-background" />
+        <div className="absolute -left-40 -top-40 h-[32rem] w-[32rem] rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -bottom-48 -right-40 h-[34rem] w-[34rem] rounded-full bg-emerald-500/10 blur-3xl" />
+      </div>
 
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your username"
-                        autoComplete="username"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <div className="mx-auto grid min-h-screen w-full max-w-6xl items-center px-4 py-10 md:grid-cols-2 md:gap-10">
+        <div className="hidden md:block">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-xs text-muted-foreground shadow-sm backdrop-blur">
+              Sign in
+            </div>
+            <h1 className="text-balance text-4xl font-semibold tracking-tight">
+              Welcome back
+            </h1>
+            <p className="max-w-md text-pretty text-sm leading-relaxed text-muted-foreground">
+              Sign in to continue to your dashboard and manage customers.
+            </p>
+          </div>
+        </div>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        autoComplete="current-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <div className="flex items-center justify-center">
+          <Card className="w-full max-w-md border bg-background/70 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-2xl">Sign in</CardTitle>
+              <CardDescription>
+                Enter your credentials to access your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-5"
+                >
+                  {registered && (
+                    <Alert className="border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+                      <AlertDescription>
+                        Account created successfully. Please sign in.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  {submitError && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{submitError}</AlertDescription>
+                    </Alert>
+                  )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign in"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter>
-          <p className="w-full text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-foreground hover:underline"
-            >
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter your username"
+                              autoComplete="username"
+                              className="h-11"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="••••••••"
+                              autoComplete="current-password"
+                              className="h-11"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="h-11 w-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Signing in..." : "Sign in"}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+            <CardFooter>
+              <p className="w-full text-center text-sm text-muted-foreground">
+                Don&apos;t have an account?{" "}
+                <Link
+                  href="/register"
+                  className="font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

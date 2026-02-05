@@ -34,31 +34,35 @@ export function CustomerFilters({
   onReset,
 }: CustomerFiltersProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Filters</CardTitle>
+    <Card className="border bg-background/70 shadow-sm">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-base">Filters</CardTitle>
         <CardDescription>
           Search and filter customers by type, status, and sort order
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSearch} className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px]">
-            <label className="text-sm font-medium mb-1.5 block">Search</label>
+        <form
+          onSubmit={onSearch}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12"
+        >
+          <div className="lg:col-span-5">
+            <label className="mb-1.5 block text-sm font-medium">Search</label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder="Search customers..."
                 value={filters.search ?? ""}
                 onChange={(e) =>
                   onFiltersChange((f) => ({ ...f, search: e.target.value }))
                 }
-                className="pl-8"
+                className="h-11 pl-9"
               />
             </div>
           </div>
-          <div className="w-[180px]">
-            <label className="text-sm font-medium mb-1.5 block">Type</label>
+
+          <div className="lg:col-span-2">
+            <label className="mb-1.5 block text-sm font-medium">Type</label>
             <Select
               value={filters.type || "all"}
               onValueChange={(value) =>
@@ -68,7 +72,7 @@ export function CustomerFilters({
                 }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="h-11">
                 <SelectValue placeholder="-" />
               </SelectTrigger>
               <SelectContent>
@@ -81,8 +85,9 @@ export function CustomerFilters({
               </SelectContent>
             </Select>
           </div>
-          <div className="w-[180px]">
-            <label className="text-sm font-medium mb-1.5 block">Status</label>
+
+          <div className="lg:col-span-2">
+            <label className="mb-1.5 block text-sm font-medium">Status</label>
             <Select
               value={filters.status || "all"}
               onValueChange={(value) =>
@@ -92,7 +97,7 @@ export function CustomerFilters({
                 }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="h-11">
                 <SelectValue placeholder="-" />
               </SelectTrigger>
               <SelectContent>
@@ -105,17 +110,16 @@ export function CustomerFilters({
               </SelectContent>
             </Select>
           </div>
-          <div className="w-[180px]">
-            <label className="text-sm font-medium mb-1.5 block">
-              customerSort
-            </label>
+
+          <div className="lg:col-span-2">
+            <label className="mb-1.5 block text-sm font-medium">Sort</label>
             <Select
               value={filters.customerSort ?? "ASC"}
               onValueChange={(value: "ASC" | "DESC") =>
                 onFiltersChange((f) => ({ ...f, customerSort: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="h-11">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -127,8 +131,14 @@ export function CustomerFilters({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-end gap-2">
-            <Button type="button" variant="outline" onClick={onReset}>
+
+          <div className="flex items-end justify-end lg:col-span-1">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onReset}
+              className="h-11 w-full lg:w-auto"
+            >
               Reset
             </Button>
           </div>
